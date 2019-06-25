@@ -39,7 +39,7 @@ let portfolioJson=[
 		"priority": "High",
 		"status": "Omaha",
 		"action": "NE",
-		"actionDate": "Contract"
+		"actionDate": "Contract"   
 	},
 	{
 		"sno": "2",
