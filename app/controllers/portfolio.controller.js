@@ -83,7 +83,7 @@ let portfolioJson=[
 	}
 ]
 
-// Create and Save a new Note
+
 exports.create = (req, res) => {
  // Validate request
  console.log(req.body);
@@ -93,50 +93,93 @@ exports.create = (req, res) => {
     });
 }
 
-// Create a Note
+
 const portfolio = new Portfolio({
-    sno: 1,
-    candidateName: "Naveen",
-    priority:"Low",
-    status:"Open",
-    action:"Closed",
-    actionDate:Date.Now
+   		sno: req.body.sno,
+   		candidateName: req.body.candidateName,
+		priority:req.body.priority,
+		status:req.body.status,
+		action:req.body.action,
+		actionDate:Date.Now
 });
 
-// Save Note in the database
 portfolio.save()
 .then(data => {
     res.send(data);
 }).catch(err => {
     res.status(500).send({
-        message: err.message || "Some error occurred while creating the Note."
+        message: err.message || "Some error occurred while creating the Portfolio."
     });
 });
 };
 
-// Retrieve and return all notes from the database.
 exports.findAll = (req, res) => {
     Portfolio.find()
     .then(portfolios => {
         res.send(portfolios);
     }).catch(err => {
         res.status(500).send({
-            message: err.message || "Some error occurred while retrieving notes."
+            message: err.message || "Some error occurred while retrieving portfolios."
         });
     });
 };
 
-// Find a single note with a noteId
 exports.findOne = (req, res) => {
 
 };
 
-// Update a note identified by the noteId in the request
 exports.update = (req, res) => {
+	if(!req.body.content) {
+        return res.status(400).send({
+            message: "Portfolio content can not be empty"
+        });
+    }
 
+    Portfolio.findByIdAndUpdate(req.params.sno, {
+     
+		candidateName: req.body.candidateName,
+		priority:req.body.priority,
+		status:req.body.status,
+		action:req.body.action,
+		actionDate:Date.Now
+    }, {new: true})
+    .then(portfolio => {
+        if(!portfolio) {
+            return res.status(404).send({
+                message: "Portfolio not found with id " + req.params.sno
+            });
+        }
+        res.send(portfolio);
+    }).catch(err => {
+        if(err.kind === 'ObjectId') {
+            return res.status(404).send({
+                message: "Portfolio not found with id " + req.params.sno
+            });                
+        }
+        return res.status(500).send({
+            message: "Error updating Portfolio with id " + req.params.sno
+        });
+    });
 };
 
-// Delete a note with the specified noteId in the request
-exports.delete = (req, res) => {
 
+exports.delete = (req, res) => {
+	Portfolio.findByIdAndRemove(req.params.sno)
+    .then(portfolio => {
+        if(!portfolio) {
+            return res.status(404).send({
+                message: "Portfolio not found with id " + req.params.sno
+            });
+        }
+        res.send({message: "Portfolio deleted successfully!"});
+    }).catch(err => {
+        if(err.kind === 'ObjectId' || err.name === 'NotFound') {
+            return res.status(404).send({
+                message: "Portfolio not found with id " + req.params.sno
+            });                
+        }
+        return res.status(500).send({
+            message: "Could not delete portfolio with id " + req.params.sno
+        });
+    });
 };
