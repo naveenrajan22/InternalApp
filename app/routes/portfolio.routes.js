@@ -7,12 +7,12 @@ module.exports = (app) => {
     // Retrieve all Notes
     app.get('/portfolio', portfolio.findAll);
 
-    // Retrieve a single Note with noteId
+    // Retrieve a single Note with Portfolio
     app.get('/portfolio/:sno', portfolio.findOne);
 
-    // Update a Note with noteId
+    // Update a Note with Portfolio
     app.put('/portfolio/:sno', portfolio.update);
 
-    // Delete a Note with noteId
-    app.delete('/portfolio/:dno', portfolio.delete);
+    // Delete a Note with Portfolio
+    app.delete('/portfolio/:_id', portfolio.delete);
 }

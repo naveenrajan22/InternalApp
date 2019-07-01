@@ -164,22 +164,25 @@ exports.update = (req, res) => {
 
 
 exports.delete = (req, res) => {
-	Portfolio.findByIdAndRemove(req.params.sno)
+	console.log(req.params);
+	Portfolio.findByIdAndRemove(req.params._id)
     .then(portfolio => {
+		console.log(portfolio);
         if(!portfolio) {
             return res.status(404).send({
-                message: "Portfolio not found with id " + req.params.sno
+                message: "Portfolio not found with id " + req.params._id
             });
         }
         res.send({message: "Portfolio deleted successfully!"});
     }).catch(err => {
+		console.log(err);
         if(err.kind === 'ObjectId' || err.name === 'NotFound') {
             return res.status(404).send({
-                message: "Portfolio not found with id " + req.params.sno
+                message: "Portfolio not found with id " + req.params._id
             });                
         }
         return res.status(500).send({
-            message: "Could not delete portfolio with id " + req.params.sno
+            message: "Could not delete portfolio with id " + req.params.id
         });
     });
 };
